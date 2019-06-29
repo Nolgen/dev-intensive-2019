@@ -27,29 +27,51 @@ fun Date.add(value: Int, units: TimeUnits = TimeUnits.SECOND): Date {
     return this
 }
 
+// Функция возвращает количество по-русски
+private fun russianNum(num: Long, list: List<String>): String {
+    val long = abs(num)
+    val oneDigit = long % 10
+    val twoDigit = long % 100
+    return when {
+        (twoDigit >= 5) && (twoDigit <= 19) -> "$long ${list[0]}"
+        oneDigit == 0L -> "$long ${list[0]}"
+        oneDigit == 1L -> "$long ${list[1]}"
+        (oneDigit >= 2) && (oneDigit <= 4) -> "$long ${list[2]}"
+        (oneDigit >= 5) && (oneDigit <= 9) -> "$long ${list[0]}"
+        else -> "Ошибка c числом $long"
+    }
+}
+
+private val minutesList = listOf<String>("минут", "минуту", "минуты")
+private val hoursList = listOf<String>("часов", "час", "часа")
+private val daysList = listOf<String>("дней", "день", "дня")
+
+private fun russianMinutes(num: Long) = russianNum(num, minutesList)
+private fun russianHours(num: Long) = russianNum(num, hoursList)
+private fun russianDays(num: Long) = russianNum(num, daysList)
 
 
 fun Date.humanizeDiff(date:Date = Date()): String {
     val diff = (this.time - date.time)
     return when {
         (diff < -360* DAY) -> "более года назад"
-        (diff >= -360* DAY && diff < -26* HOUR) -> "${Utils.russianDays(diff / DAY)} назад"
+        (diff >= -360* DAY && diff < -26* HOUR) -> "${russianDays(diff / DAY)} назад"
         (diff >= -26* HOUR && diff < -22* HOUR) -> "день назад"
-        (diff >= -22* HOUR && diff < -75* MINUTE) -> "${Utils.russianHours(diff / HOUR)} назад"
+        (diff >= -22* HOUR && diff < -75* MINUTE) -> "${russianHours(diff / HOUR)} назад"
         (diff >= -75* MINUTE && diff < -45* MINUTE) -> "час назад"
-        (diff >= -45* MINUTE && diff < -75* SECOND) -> "${Utils.russianMinutes(diff / MINUTE)} назад"
-        (diff >= -75* SECOND && diff < -4* SECOND) -> "минуту назад"
+        (diff >= -45* MINUTE && diff < -75* SECOND) -> "${russianMinutes(diff / MINUTE)} назад"
+        (diff >= -75* SECOND && diff < -45* SECOND) -> "минуту назад"
         (diff >= -45* SECOND && diff < -1* SECOND) -> "несколько секунд назад"
 
         (diff >= -1* SECOND && diff <= 1* SECOND) -> "только что"
 
         (diff > 1* SECOND && diff <= 45* SECOND)  -> "через несколько секунд"
         (diff > 45* SECOND && diff <= 75* SECOND)  -> "через минуту"
-        (diff > 75* SECOND && diff <= 45* MINUTE) -> "через ${Utils.russianMinutes(diff / MINUTE)}"
+        (diff > 75* SECOND && diff <= 45* MINUTE) -> "через ${russianMinutes(diff / MINUTE)}"
         (diff > 45* MINUTE && diff <= 75* MINUTE) -> "через час"
-        (diff >= 75* MINUTE && diff <= 22* HOUR) -> "через ${Utils.russianHours(diff / HOUR)}"
-        (diff >= 22* HOUR && diff <= 26* HOUR) -> "через день"
-        (diff >= 26* HOUR && diff <= 360* DAY) -> "через ${Utils.russianDays(diff / DAY)}"
+        (diff > 75* MINUTE && diff <= 22* HOUR) -> "через ${russianHours(diff / HOUR)}"
+        (diff > 22* HOUR && diff <= 26* HOUR) -> "через день"
+        (diff > 26* HOUR && diff <= 360* DAY) -> "через ${russianDays(diff / DAY)}"
         (diff > 360* DAY) -> "более чем через год"
         else -> "Ошибка с числом $diff"
     }

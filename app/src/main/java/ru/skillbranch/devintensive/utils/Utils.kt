@@ -46,27 +46,4 @@ object Utils {
         }
         return res
     }
-
-    private val minutesList = listOf<String>("минут","минута","минуты")
-    private val hoursList = listOf<String>("часов","час","часа")
-    private val daysList = listOf<String>("дней","день","дня")
-
-    // Функция возвращает количество по-русски
-    private fun russianNum(num:Long, list:List<String>):String {
-        val long = Math.abs(num)
-        val oneDigit = long % 10
-        val twoDigit = long % 100
-        return when {
-            (twoDigit >= 5) && (twoDigit <= 19) -> "$long ${list[0]}"
-            oneDigit == 0L -> "$long ${list[0]}"
-            oneDigit == 1L -> "$long ${list[1]}"
-            (oneDigit >= 2) && (oneDigit <= 4) -> "$long ${list[2]}"
-            (oneDigit >= 5) && (oneDigit <= 9) -> "$long ${list[0]}"
-            else -> "Ошибка c числом $long"
-        }
-    }
-
-    fun russianMinutes(num:Long) = russianNum(num, minutesList)
-    fun russianHours(num:Long) = russianNum(num, hoursList)
-    fun russianDays(num:Long) = russianNum(num, daysList)
 }
