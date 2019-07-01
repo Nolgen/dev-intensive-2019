@@ -22,7 +22,7 @@ object Utils {
         return Pair(firstName, lastName)
     }
 
-    fun initials(firstName: String?, lastName: String?): String? {
+    fun toInitials(firstName: String?, lastName: String?): String? {
         var res = ""
         res += if ((firstName != null) && (firstName.length > 0)) firstName[0].toString().trim().toUpperCase() else ""
         res += if ((lastName != null) && (lastName.length > 0)) lastName[0].toString().trim().toUpperCase() else ""
