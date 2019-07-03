@@ -42,10 +42,12 @@ private fun russianNum(num: Long, list: List<String>): String {
     }
 }
 
+private val secondsList = listOf<String>("секунд", "секунду", "секунды")
 private val minutesList = listOf<String>("минут", "минуту", "минуты")
 private val hoursList = listOf<String>("часов", "час", "часа")
 private val daysList = listOf<String>("дней", "день", "дня")
 
+//private fun russianSeconds(num: Long) = russianNum(num, secondsList)
 private fun russianMinutes(num: Long) = russianNum(num, minutesList)
 private fun russianHours(num: Long) = russianNum(num, hoursList)
 private fun russianDays(num: Long) = russianNum(num, daysList)
@@ -81,5 +83,12 @@ enum class TimeUnits {
     SECOND,
     MINUTE,
     HOUR,
-    DAY
+    DAY;
+    fun plural(value:Int) =
+        when (this) {
+            SECOND -> russianNum(value.toLong(), secondsList)
+            MINUTE -> russianNum(value.toLong(), minutesList)
+            HOUR -> russianNum(value.toLong(), hoursList)
+            DAY -> russianNum(value.toLong(), daysList)
+        }
 }
