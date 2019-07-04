@@ -1,6 +1,8 @@
 package ru.skillbranch.devintensive.extensions
 
-fun String.truncate(num:Int = 16) = if (this.length > num) this.substring(0,num).trim() + "..." else this
+fun String.truncate(num:Int = 16) = if (this.trim().length > num+1)
+                                        this.trim().substring(0,num+1).trim() + "..."
+                                    else this.trim()
 
 //*String.stripHtml
 //Необходимо реализовать метод stripHtml для очистки строки от лишних пробелов, html тегов, escape последовательностей
