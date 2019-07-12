@@ -1,7 +1,7 @@
 package ru.skillbranch.devintensive.extensions
 
-fun String.truncate(num:Int = 16) = if (this.trim().length > num+1)
-                                        this.trim().substring(0,num+1).trim() + "..."
+fun String.truncate(num:Int = 16) = if (this.trim().length > num)
+                                        this.trim().substring(0,num).trim() + "..."
                                     else this.trim()
 
 //*String.stripHtml
