@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import androidx.core.text.isDigitsOnly
+
 class Bender(var status:Status = Status.NORMAL, var question: Question = Question.NAME) {
 
     fun askQuestion():String = when(question){
@@ -12,7 +14,12 @@ class Bender(var status:Status = Status.NORMAL, var question: Question = Questio
     }
 
     fun listenAnswer(answer:String): Pair<String, Triple<Int,Int,Int>> {
-        if (question == Question.IDLE) return "${question.question}" to status.color
+        if (question == Question.IDLE) return question.question to status.color
+
+        // Валидация
+        val validate = validateAnswer(answer,question)
+        if(validate != "") return validate to status.color
+
         if(question.answers.contains(answer.toLowerCase())) {
             question = question.nextQuestion()
             return "Отлично - ты справился\n${question.question}" to status.color
@@ -47,10 +54,12 @@ class Bender(var status:Status = Status.NORMAL, var question: Question = Questio
     enum class Question(val question: String, val answers: List<String>) {
         NAME("Как меня зовут?", listOf("бендер", "bender")) {
             override fun nextQuestion(): Question = PROFESSION
+
         },
         PROFESSION("Назови мою профессию?", listOf("сгибальщик", "bender")) {
             override fun nextQuestion(): Question = MATERIAL
-        },
+
+            },
         MATERIAL("Из чего я сделан?", listOf("металл", "дерево", "metal", "iron", "wood")) {
             override fun nextQuestion(): Question = BDAY
         },
@@ -65,5 +74,27 @@ class Bender(var status:Status = Status.NORMAL, var question: Question = Questio
         };
 
         abstract fun nextQuestion():Question
+    }
+
+    fun validateAnswer(answer: String, question: Question):String {
+        return when(question) {
+            Question.NAME -> if (answer.isNotEmpty() && answer[0] == answer[0].toUpperCase()) ""
+                else "Имя должно начинаться с заглавной буквы\nКак меня зовут?"
+
+            Question.PROFESSION -> if (answer.isNotEmpty() && answer[0] != answer[0].toUpperCase()) ""
+                else "Профессия должна начинаться со строчной буквы\nНазови мою профессию?"
+
+            Question.MATERIAL -> if (answer.isNotEmpty() && ! answer.contains(Regex("[0-9]") )) ""
+                else "Материал не должен содержать цифр\nИз чего я сделан?"
+
+            Question.BDAY -> if (answer.isNotEmpty() && answer.isDigitsOnly()) ""
+                else "Год моего рождения должен содержать только цифры\nКогда меня создали?"
+
+            Question.SERIAL -> if (answer.isNotEmpty() && answer.isDigitsOnly() && answer.length == 7) ""
+                else "Серийный номер содержит только цифры, и их 7\nМой серийный номер?"
+
+            Question.IDLE ->  ""
+        }
+
     }
 }
